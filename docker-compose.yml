@@ -1,0 +1,12 @@
+services:
+  dev-environment:
+    image: node:22-alpine
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      # Prevents local node_modules from overriding container ones
+      - /workspace/node_modules
+    ports:
+      - "3000:3000"
+      - "5173:5173"
+    command: sh -c "npm install && npx turbo run dev"
