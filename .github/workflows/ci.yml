@@ -1,26 +1,43 @@
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v6
-    with:
-      fetch-depth: 2
+name: CI Pipeline
 
-  - name: Setup Node.js 22
-    uses: actions/setup-node@v6
-    with:
-      node-version: 22
-      cache: "npm"
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
 
-  - name: Cache Turborepo
-    uses: actions/cache@v5
-    with:
-      path: .turbo
-      key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
-      restore-keys: |
-        turbo-${{ github.job }}-${{ github.ref_name }}-
-        turbo-${{ github.job }}-
+jobs:
+  validate-monorepo:
+    name: Validate and Build
+    runs-on: ubuntu-latest
 
-  - name: Install Dependencies
-    run: npm ci
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
 
-  - name: Execute Pipeline (Lint, Typecheck, Build)
-    run: npx turbo run lint typecheck build --continue
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Cache Turborepo
+        uses: actions/cache@v5
+        with:
+          path: .turbo
+          key: turbo-${{ github.job }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            turbo-${{ github.job }}-${{ github.ref_name }}-
+            turbo-${{ github.job }}-
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Execute Pipeline (Lint, Typecheck, Build)
+        run: npx turbo run lint typecheck build --continue
