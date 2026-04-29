@@ -39,5 +39,5 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Execute Pipeline (Lint, Typecheck, Build)
-        run: npx turbo run lint typecheck build --continue
+      - name: Execute Pipeline (Lint, Typecheck, Build, Test)
+        run: npx turbo run lint typecheck build test --continue
