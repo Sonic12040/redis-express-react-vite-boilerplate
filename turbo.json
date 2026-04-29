@@ -9,6 +9,9 @@
       "outputs": []
     },
     "lint": {},
+    "typecheck": {
+      "outputs": []
+    },
     "dev": {
       "cache": false,
       "persistent": true
